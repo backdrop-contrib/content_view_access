@@ -6,9 +6,8 @@
  * Ensure that tac_lite hooks are invoked after taxonomy module hooks.
  */
 function content_view_access_install() {
-  if (count(module_implements('node_grants'))) {
-    backdrop_set_message(t('You need to !rebuild_permissions.', array('!rebuild_permissions' => l(t('rebuild permissions'), 'admin/reports/status/rebuild'))));
-  }
+  //node_access_needs_rebuild(TRUE);
+  backdrop_set_message(t('You need to !rebuild_permissions and !assign_permissions so each content type can be viewed per role. If a role is not given per content type permission to view they will denied access.', array('!rebuild_permissions' => l(t('rebuild node permissions'), 'admin/reports/status/rebuild'), '!assign_permissions' => l(t('assign permissions'), 'admin/config/people/permissions', array('fragment' => 'module-content_view_access')))));
 }
 
 /**
@@ -28,9 +27,5 @@ function content_view_access_uninstall() {
   }
   foreach ($roles as $role => $name) {
     user_role_revoke_permissions($role, $remove_perms);
-  }
-
-  if (count(module_implements('node_grants'))) {
-    backdrop_set_message(t('You need to !rebuild_permissions.', array('!rebuild_permissions' => l(t('rebuild permissions'), 'admin/reports/status/rebuild'))));
   }
 }
