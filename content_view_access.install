@@ -1,0 +1,36 @@
+<?php
+
+/**
+ * Implementation of hook_install().
+ *
+ * Ensure that tac_lite hooks are invoked after taxonomy module hooks.
+ */
+function content_view_access_install() {
+  if (count(module_implements('node_grants'))) {
+    backdrop_set_message(t('You need to !rebuild_permissions.', array('!rebuild_permissions' => l(t('rebuild permissions'), 'admin/reports/status/rebuild'))));
+  }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function content_view_access_uninstall() {
+  //Remove this module's permissions from all roles
+  $remove_perms = array();
+  foreach (node_type_get_types() as $type => $info) {
+    $remove_perms[] = 'view own ' . $type . ' content';
+    $remove_perms[] = 'view any ' . $type . ' content';
+  }
+  $roles = array();
+  foreach ($remove_perms as $perm) {
+    $role = user_roles(FALSE, $perm);
+    $roles = array_merge($roles, $role);
+  }
+  foreach ($roles as $role => $name) {
+    user_role_revoke_permissions($role, $remove_perms);
+  }
+
+  if (count(module_implements('node_grants'))) {
+    backdrop_set_message(t('You need to !rebuild_permissions.', array('!rebuild_permissions' => l(t('rebuild permissions'), 'admin/reports/status/rebuild'))));
+  }
+}

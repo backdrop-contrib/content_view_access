@@ -1,0 +1,6 @@
+name = Content view access
+description = Provides "View own content" and "View any content" permissions for each content type.
+package = Access control
+
+backdrop = 1.x
+type = module
