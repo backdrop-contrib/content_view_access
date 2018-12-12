@@ -25,8 +25,11 @@ function content_view_access_permission() {
  */
 function content_view_access_node_access_records($node) {
   $grants = array();
-  // Only apply grants to published nodes
-  if ($node->status) {
+  // Only apply grants to published nodes unless they have 
+  // permission to view the unpublished content
+  if ($node->status || 
+    user_access('view any unpublished content') ||
+    ($node->uid==$GLOBALS['user']->uid && user_access('view own unpublished content'))) {
     // Give authors own realm
     $grant = array(
       'nid' => $node->nid,
