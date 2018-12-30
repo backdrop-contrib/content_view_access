@@ -29,3 +29,10 @@ function content_view_access_uninstall() {
     user_role_revoke_permissions($role, $remove_perms);
   }
 }
+
+/**
+ * Rebuild node permissions to include accommodation for unpublished content.
+ */
+function content_view_access_update_1000() {
+  node_access_rebuild(TRUE);
+}
